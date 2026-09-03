@@ -13,6 +13,8 @@ shieldhelpers.setPalette(hex`000000ffffffff2121ff93c4ff8135fff609249ca378dc52003
 const theScreen: Bitmap = __screen_internal.createScreen();
 theScreen.fill(15)
 
+basic.pause(1); // this is needed to allow CODAL to process all queued handdlers before we go to user code
+
 namespace __screen_internal {
 
     export function createScreen() {
