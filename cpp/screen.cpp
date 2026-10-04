@@ -39,6 +39,7 @@ public:
 
   WDisplay() {
     uint32_t cfg2 = getConfig(CFG_DISPLAY_CFG2, 8);
+    const int conn = cfg2 >> 24;
 
     uint32_t cfg0 = getConfig(CFG_DISPLAY_CFG0, 0x02000080);
     uint32_t frmctr1 = getConfig(CFG_DISPLAY_CFG1, 0x00000603); 
@@ -63,11 +64,15 @@ public:
       height = 128;
       lcd = new ST7735(*io, *LOOKUP_PIN(DISPLAY_CS), *LOOKUP_PIN(DISPLAY_DC));
     } else if (dispTp == DISPLAY_TYPE_SMART) {
-      lcd = NULL;
-      width = 160;
-      height = 120;
-      smart =
-          new JDDisplay(spi, LOOKUP_PIN(DISPLAY_CS), LOOKUP_PIN(DISPLAY_DC));
+        NRF52Pin* mosi = LOOKUP_PIN(DISPLAY_MOSI);
+        NRF52Pin* sck = LOOKUP_PIN(DISPLAY_SCK);
+        mosi->setHighDrive(true);
+        sck->setHighDrive(true);
+        lcd = NULL;
+        width = 160;
+        height = 120;
+        smart =
+            new JDDisplay(spi, LOOKUP_PIN(DISPLAY_CS), LOOKUP_PIN(DISPLAY_DC));
     } else
       target_panic(128); // PANIC_SCREEN_ERROR
 
